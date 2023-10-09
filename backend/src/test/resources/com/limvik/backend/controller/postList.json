@@ -1,0 +1,19 @@
+{
+  "id": 77,
+  "company": {
+    "id": 1,
+    "name": "(주)원티드랩"
+  },
+  "address": {
+    "street": "올림픽로 300, 롯데월드타워 35층",
+    "city": "송파구",
+    "state": "서울특별시"
+  },
+  "positionName": "백엔드 주니어 개발자",
+  "reward": 1500000,
+  "skills": [
+    {
+      "name": "Java"
+    }
+  ]
+}
