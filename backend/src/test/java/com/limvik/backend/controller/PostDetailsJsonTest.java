@@ -15,53 +15,59 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-public class PostListJsonTest {
+public class PostDetailsJsonTest {
 
     @Autowired
     JacksonTester<PostView> json;
 
-    private static PostView postList;
+    private static PostView postDetails;
 
     @BeforeAll
     static void init() {
-        postList = PostView.postListOf(
+        postDetails = new PostView(
                 77L,
                 new CompanyView(1L, "(주)원티드랩"),
                 new AddressView("올림픽로 300, 롯데월드타워 35층", "송파구", "서울특별시"),
                 "백엔드 주니어 개발자",
                 1500000L,
-                new SkillView[]{new SkillView("Java")}
+                new SkillView[]{new SkillView("Java")},
+                "원티드랩에서 백엔드 주니어 개발자를 채용합니다.",
+                new Long[]{11L, 23L, 44L, 64L}
         );
     }
 
     @Test
-    void postListSerializationTest() throws IOException {
-        assertThat(json.write(postList)).isStrictlyEqualToJson("postList.json");
-        assertThat(json.write(postList)).hasJsonPathNumberValue("@.id");
-        assertThat(json.write(postList)).extractingJsonPathNumberValue("@.id").isEqualTo(77);
-        assertThat(json.write(postList)).hasJsonPath("@.company");
-        assertThat(json.write(postList)).extractingJsonPathValue("@.company")
+    void postDetailsSerializationTest() throws IOException {
+        assertThat(json.write(postDetails)).isStrictlyEqualToJson("postDetails.json");
+        assertThat(json.write(postDetails)).hasJsonPathNumberValue("@.id");
+        assertThat(json.write(postDetails)).extractingJsonPathNumberValue("@.id").isEqualTo(77);
+        assertThat(json.write(postDetails)).hasJsonPath("@.company");
+        assertThat(json.write(postDetails)).extractingJsonPathValue("@.company")
                 .extracting("id").isEqualTo(1);
-        assertThat(json.write(postList)).extractingJsonPathValue("@.company")
+        assertThat(json.write(postDetails)).extractingJsonPathValue("@.company")
                 .extracting("name").isEqualTo("(주)원티드랩");
-        assertThat(json.write(postList)).hasJsonPath("@.address");
-        assertThat(json.write(postList)).extractingJsonPathValue("@.address")
+        assertThat(json.write(postDetails)).hasJsonPath("@.address");
+        assertThat(json.write(postDetails)).extractingJsonPathValue("@.address")
                 .extracting("street").isEqualTo("올림픽로 300, 롯데월드타워 35층");
-        assertThat(json.write(postList)).extractingJsonPathValue("@.address")
+        assertThat(json.write(postDetails)).extractingJsonPathValue("@.address")
                 .extracting("city").isEqualTo("송파구");
-        assertThat(json.write(postList)).extractingJsonPathValue("@.address")
+        assertThat(json.write(postDetails)).extractingJsonPathValue("@.address")
                 .extracting("state").isEqualTo("서울특별시");
-        assertThat(json.write(postList)).hasJsonPathStringValue("@.positionName");
-        assertThat(json.write(postList)).extractingJsonPathStringValue("@.positionName")
+        assertThat(json.write(postDetails)).hasJsonPathStringValue("@.positionName");
+        assertThat(json.write(postDetails)).extractingJsonPathStringValue("@.positionName")
                 .isEqualTo("백엔드 주니어 개발자");
-        assertThat(json.write(postList)).hasJsonPathNumberValue("@.reward");
-        assertThat(json.write(postList)).extractingJsonPathNumberValue("@.reward").isEqualTo(1500000);
-        assertThat(json.write(postList)).hasJsonPathArrayValue("@.skills");
-        assertThat(json.write(postList)).extractingJsonPathValue("@.skills[0].name").isEqualTo("Java");
+        assertThat(json.write(postDetails)).hasJsonPathNumberValue("@.reward");
+        assertThat(json.write(postDetails)).extractingJsonPathNumberValue("@.reward").isEqualTo(1500000);
+        assertThat(json.write(postDetails)).hasJsonPathArrayValue("@.skills");
+        assertThat(json.write(postDetails)).extractingJsonPathValue("@.skills[0].name").isEqualTo("Java");
+        assertThat(json.write(postDetails)).hasJsonPathStringValue("@.jobDescription");
+        assertThat(json.write(postDetails)).extractingJsonPathStringValue("@.jobDescription", "원티드랩에서 백엔드 주니어 개발자를 채용합니다.");
+        assertThat(json.write(postDetails)).hasJsonPathArrayValue("@.otherPostsByCompany");
+        assertThat(json.write(postDetails)).extractingJsonPathValue("@.otherPostsByCompany[0]").isEqualTo(11);
     }
 
     @Test
-    void postListDeserializationTest() throws IOException {
+    void postDetailsDeserializationTest() throws IOException {
         String expected = """
                 {
                   "id": 77,
@@ -80,6 +86,13 @@ public class PostListJsonTest {
                     {
                       "name": "Java"
                     }
+                  ],
+                  "jobDescription": "원티드랩에서 백엔드 주니어 개발자를 채용합니다.",
+                  "otherPostsByCompany": [
+                    11,
+                    23,
+                    44,
+                    64
                   ]
                 }
                 """;
@@ -93,5 +106,8 @@ public class PostListJsonTest {
         assertThat(json.parseObject(expected).positionName()).isEqualTo("백엔드 주니어 개발자");
         assertThat(json.parseObject(expected).reward()).isEqualTo(1500000L);
         assertThat(json.parseObject(expected).skills()[0].name()).isEqualTo("Java");
+        assertThat(json.parseObject(expected).jobDescription()).isEqualTo("원티드랩에서 백엔드 주니어 개발자를 채용합니다.");
+        assertThat(json.parseObject(expected).otherPostsByCompany().length).isEqualTo(4);
+        assertThat(json.parseObject(expected).otherPostsByCompany()[0]).isEqualTo(11);
     }
 }

@@ -12,4 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.positionName LIKE %:keyword% OR p.jobDescription LIKE %:keyword%")
     List<Post> search(@Param("keyword") String keyword);
 
+    @Query("SELECT p.id FROM Post p WHERE p.company.id = :companyId")
+    List<Long> findAllIdByCompanyId(Long companyId);
+
 }
