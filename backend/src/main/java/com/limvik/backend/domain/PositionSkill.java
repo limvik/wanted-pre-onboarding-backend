@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.util.Optional;
 
-@EqualsAndHashCode(of = "ids")
+@EqualsAndHashCode(of = {"post", "skill"})
 @Getter
 @Setter
 @AllArgsConstructor
