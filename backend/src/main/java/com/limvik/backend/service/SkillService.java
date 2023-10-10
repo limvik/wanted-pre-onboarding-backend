@@ -24,4 +24,8 @@ public class SkillService {
         return skillRepository.findAllById(skillIds);
     }
 
+    public Skill getSkillByName(String name) {
+        return skillRepository.findByName(name).get();
+    }
+
 }
