@@ -48,6 +48,12 @@ public class PostController {
         return ResponseEntity.ok(returnedPost);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> returnDeletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+        return ResponseEntity.noContent().build();
+    }
+
     private void validateRequestedPost(PostView postView) {
         if (!StringUtils.hasText(postView.positionName()) || !StringUtils.hasText(postView.jobDescription()))
             throw new PostNotValidException();
