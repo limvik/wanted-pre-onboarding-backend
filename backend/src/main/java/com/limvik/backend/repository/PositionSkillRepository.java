@@ -13,4 +13,8 @@ public interface PositionSkillRepository extends JpaRepository<PositionSkill, Po
     @Query("SELECT p.ids.postId FROM PositionSkill p WHERE p.ids.skillId = :id")
     Set<Long> findPostIdsBySkillId(@Param("id") Long id);
 
+    @Query("SELECT p.ids.skillId FROM PositionSkill p WHERE p.ids.postId = :id")
+    Set<Long> findSkillIdByPostId(@Param("id") Long id);
+
+    Set<PositionSkill> findAllByPostId(Long postId);
 }
