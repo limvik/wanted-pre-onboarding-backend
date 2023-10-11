@@ -1,9 +1,7 @@
 package com.limvik.backend.service;
 
-import com.limvik.backend.domain.Address;
-import com.limvik.backend.domain.PositionSkill;
-import com.limvik.backend.domain.Post;
-import com.limvik.backend.domain.Skill;
+import com.limvik.backend.domain.*;
+import com.limvik.backend.exception.PostNotFoundException;
 import com.limvik.backend.repository.AddressRepository;
 import com.limvik.backend.repository.PositionSkillRepository;
 import com.limvik.backend.repository.PostRepository;
@@ -76,13 +74,32 @@ public class PostService {
     }
 
     private Set<PositionSkill> savePositionSkills(Post post, List<Skill> skills) {
+        Set<PositionSkill> positionSkills = getPositionSkills(post, skills);
+        var returnedPositionSkill = positionSkillRepository.saveAll(positionSkills);
+        positionSkills.clear();
+        positionSkills.addAll(returnedPositionSkill);
+        return positionSkills;
+    }
+
+    @Transactional
+    public Post modifyPost(Post post, List<Skill> skills) {
+        postRepository.findById(post.getId()).orElseThrow(() -> new PostNotFoundException(post.getId()));
+        var positionSkills = getPositionSkills(post, skills);
+        var existSkillIds = positionSkillRepository.findSkillIdByPostId(post.getId());
+        positionSkills.removeIf(positionSkill ->
+                existSkillIds.contains(positionSkill.getSkill().getId()));
+        post.setPositionSkills(positionSkills);
+        post.getAddress().setPostId(post.getId());
+        var modifiedPost = postRepository.save(post);
+        modifiedPost.setPositionSkills(positionSkillRepository.findAllByPostId(modifiedPost.getId()));
+        return modifiedPost;
+    }
+
+    private Set<PositionSkill> getPositionSkills(Post post, List<Skill> skills) {
         Set<PositionSkill> positionSkills = new HashSet<>();
         for (var skill : skills) {
             positionSkills.add(new PositionSkill(post, skill));
         }
-        var returnedPositionSkill = positionSkillRepository.saveAll(positionSkills);
-        positionSkills.clear();
-        positionSkills.addAll(returnedPositionSkill);
         return positionSkills;
     }
 
