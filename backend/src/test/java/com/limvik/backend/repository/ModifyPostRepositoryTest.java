@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Set;
+import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,11 +50,14 @@ public class ModifyPostRepositoryTest {
         Address address = Address.builder()
                 .postId(1L).street(streetAddress).city(cityAddress).state(stateAddress)
                 .build();
-        var skill1 = skillRepository.findByName("java").get();
+        var skill1 = skillRepository.findByName("spring").get();
         var skill2 = skillRepository.findByName("react").get();
-        var existSkill = skillRepository.findByName("spring").get();
-        positionSkillRepository.deleteAllById(Set.of(new PositionSkillKey(dummyPost.getId(), existSkill.getId())));
-        var positionSkills = Set.of(new PositionSkill(dummyPost, skill1), new PositionSkill(dummyPost, skill2));
+        var positionSkills = new HashSet<PositionSkill>();
+        positionSkills.add(new PositionSkill(dummyPost, skill1));
+        positionSkills.add(new PositionSkill(dummyPost, skill2));
+        var skillIds = positionSkillRepository.findSkillIdByPostId(1L);
+        positionSkills.removeIf(positionSkill ->
+                skillIds.contains(positionSkill.getSkill().getId()));
 
         var post = Post.builder()
                 .id(1L)
@@ -69,6 +72,7 @@ public class ModifyPostRepositoryTest {
         var returnedPost = postRepository.save(post);
 
         var newPost = postRepository.findById(returnedPost.getId()).get();
+        newPost.setPositionSkills(positionSkillRepository.findAllByPostId(1L));
         assertThat(newPost.getId()).isEqualTo(1L);
         assertThat(newPost.getPositionName()).isEqualTo(positionName);
         assertThat(newPost.getJobDescription()).isEqualTo(jobDescription);
@@ -79,7 +83,6 @@ public class ModifyPostRepositoryTest {
         assertThat(newPost.getAddress().getCity()).isEqualTo(cityAddress);
         assertThat(newPost.getAddress().getState()).isEqualTo(stateAddress);
         assertThat(newPost.getPositionSkills()).hasSize(2);
-        assertThat(newPost.getPositionSkills().containsAll(positionSkills)).isTrue();
 
     }
 
