@@ -39,6 +39,15 @@ public class PostController {
         return ResponseEntity.created(URI.create("/api/v1/posts/" + returnedPost.id())).body(returnedPost);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<PostView> returnModifiedPost(@PathVariable Long id,
+                                                       @RequestBody PostView modifyRequestPost) {
+        validateRequestedPost(modifyRequestPost);
+        var modifiedPost = mapModifyPostDetailViewToPost(modifyRequestPost, id);
+        var returnedPost = mapPostToPostView().map(modifiedPost);
+        return ResponseEntity.ok(returnedPost);
+    }
+
     private void validateRequestedPost(PostView postView) {
         if (!StringUtils.hasText(postView.positionName()) || !StringUtils.hasText(postView.jobDescription()))
             throw new PostNotValidException();
@@ -60,6 +69,12 @@ public class PostController {
 //        // 로그인 기능을 생략하여 임시로 첫 번째 회사의 정보를 사용
 //        post.setCompany(Company.builder().id(1L).name("(주)원티드랩").build());
         return postService.createPost(post, getSkills(postView));
+    }
+
+    private Post mapModifyPostDetailViewToPost(PostView postView, Long postId) {
+        var post = mapPostViewToPost().map(postView);
+        post.setId(postId);
+        return postService.modifyPost(post, getSkills(postView));
     }
 
     private List<PostView> mapPostListToPostViewList(List<Post> posts) {
