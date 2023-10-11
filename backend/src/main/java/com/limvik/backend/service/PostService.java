@@ -83,7 +83,7 @@ public class PostService {
 
     @Transactional
     public Post modifyPost(Post post, List<Skill> skills) {
-        postRepository.findById(post.getId()).orElseThrow(() -> new PostNotFoundException(post.getId()));
+        findPostById(post.getId());
         var positionSkills = getPositionSkills(post, skills);
         var existSkillIds = positionSkillRepository.findSkillIdByPostId(post.getId());
         positionSkills.removeIf(positionSkill ->
@@ -105,8 +105,19 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long id) {
-        postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+        findPostById(id);
         postRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Post getPost(Long id) {
+        var post = findPostById(id);
+        post.setPositionSkills(positionSkillRepository.findAllByPostId(id));
+        return post;
+    }
+
+    private Post findPostById(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
     }
 
 }

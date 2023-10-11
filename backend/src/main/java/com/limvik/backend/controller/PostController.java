@@ -54,6 +54,12 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PostView> returnPostDetails(@PathVariable Long id) {
+        var postView = mapPostToPostView().map(postService.getPost(id));
+        return ResponseEntity.ok(postView);
+    }
+
     private void validateRequestedPost(PostView postView) {
         if (!StringUtils.hasText(postView.positionName()) || !StringUtils.hasText(postView.jobDescription()))
             throw new PostNotValidException();
