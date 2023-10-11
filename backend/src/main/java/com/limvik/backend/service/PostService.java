@@ -103,4 +103,10 @@ public class PostService {
         return positionSkills;
     }
 
+    @Transactional
+    public void deletePost(Long id) {
+        postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+        postRepository.deleteById(id);
+    }
+
 }
