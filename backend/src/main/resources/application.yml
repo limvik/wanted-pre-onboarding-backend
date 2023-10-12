@@ -20,6 +20,9 @@ spring:
     hikari:
       connection-timeout: 2000
       maximum-pool-size: 5
+  flyway:
+    skip-default-callbacks: false # true 일 경우 afterMigrate.sql 내 sql 수행안함
   jpa:
     hibernate:
       ddl-auto: validate
+    show-sql: true
