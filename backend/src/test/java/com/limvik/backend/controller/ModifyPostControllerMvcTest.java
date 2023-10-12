@@ -134,7 +134,7 @@ public class ModifyPostControllerMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(containsString("입력하신 채용공고의 id = " + targetPostId + "는 존재하지 않습니다.")));
+                .andExpect(content().string(containsString(new PostNotFoundException(targetPostId).getMessage())));
     }
 
     @Test
