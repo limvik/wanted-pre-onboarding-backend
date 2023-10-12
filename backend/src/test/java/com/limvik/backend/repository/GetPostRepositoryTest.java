@@ -37,7 +37,7 @@ public class GetPostRepositoryTest {
         assertThat(StreamSupport.stream(posts.spliterator(), true)
                 .filter(post -> post.getPositionName().equals("백엔드 주니어 개발자") ||
                                 post.getPositionName().equals("프론트 주니어 개발자"))
-                .collect(Collectors.toList())).hasSize(2);
+                .collect(Collectors.toList())).hasSize(3);
     }
 
     @Test
