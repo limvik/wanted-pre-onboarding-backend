@@ -9,3 +9,5 @@ INSERT INTO addresses(post_id, street, city, state) VALUES
 (1, '올림픽로 300, 롯데월드타워 35층', '송파구', '서울특별시'),
 (2, '디지털로 34길 43 14층 (구로동, 코오롱싸이언스밸리1차)', '구로구', '서울특별시');
 INSERT INTO position_skills(post_id, skill_id) VALUES (1, 2), (2, 4);
+INSERT INTO users(email, password) VALUES ('limvik@limvik.com', '$2a$12$66mYQzGra33GSayZtcwhH.ZFqY3R5tsXa7UX9q2PM2k3.ULx32n5m');
+INSERT INTO status(name) VALUES ('서류접수');
