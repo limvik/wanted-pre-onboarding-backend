@@ -14,10 +14,10 @@ import java.io.Serializable;
 @Embeddable
 public class ApplicationKey implements Serializable {
 
-    @Column(name = "user_id", updatable = false)
-    private Long userId;
-
     @Column(name = "post_id", updatable = false)
     private Long postId;
+
+    @Column(name = "user_id", updatable = false)
+    private Long userId;
 
 }
