@@ -102,7 +102,7 @@ public class ModifyPostServiceMockTest {
 
         assertThatThrownBy(() -> postService.modifyPost(post, List.of(skill)))
                 .isInstanceOf(PostNotFoundException.class)
-                .hasMessage("입력하신 채용공고의 id = " + post.getId() + "는 존재하지 않습니다.");
+                .hasMessage(new PostNotFoundException(targetPostId).getMessage());
     }
 
 }
