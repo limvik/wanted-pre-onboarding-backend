@@ -1,3 +1,13 @@
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `position_skills`;
+TRUNCATE TABLE `addresses`;
+TRUNCATE TABLE `posts`;
+TRUNCATE TABLE `companies`;
+TRUNCATE TABLE `skills`;
+TRUNCATE TABLE `users`;
+TRUNCATE TABLE `status`;
+SET FOREIGN_KEY_CHECKS = 1;
+
 INSERT INTO companies(name, business_number) VALUES ('원티드랩', 2998600021);
 INSERT INTO companies(name, business_number) VALUES ('(주)사람인에이치알', 1138600917);
 INSERT INTO skills(name) VALUES ('java'), ('spring'), ('react'), ('javascript');
